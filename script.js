@@ -290,6 +290,22 @@
   // ====================================================
   // 5. CartFlows Order Calculator & Interaction
   // ====================================================
+  // Detect if WordPress / CartFlows rendered real WooCommerce checkout form
+  const cfShortcodeContainer = document.getElementById('cartflows-shortcode-container');
+  const staticOrderForm = document.getElementById('cartflows-order-form');
+
+  if (cfShortcodeContainer && staticOrderForm) {
+    const isWpRendered = cfShortcodeContainer.querySelector('form.woocommerce-checkout, .wcf-embed-checkout-form, .woocommerce');
+    if (isWpRendered) {
+      staticOrderForm.style.display = 'none';
+      cfShortcodeContainer.style.display = 'block';
+    } else {
+      // In static browser preview: hide raw string [cartflows_checkout] so visitor sees interactive preview form
+      cfShortcodeContainer.style.display = 'none';
+      staticOrderForm.style.display = 'block';
+    }
+  }
+
   const qtyMinus = document.getElementById('qty-minus');
   const qtyPlus = document.getElementById('qty-plus');
   const qtyInput = document.getElementById('order-quantity');

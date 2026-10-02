@@ -127,14 +127,109 @@
     }
   }
 
+  // Open Complete Elementor Ready Code Modal
+  async function openExportModal() {
+    let fullCode = '';
+    try {
+      const res = await fetch('/roshona-elementor-ready.html');
+      if (res.ok) {
+        fullCode = await res.text();
+      }
+    } catch (e) {
+      console.warn('Failed to fetch static template, building dynamically', e);
+    }
+
+    if (!fullCode) {
+      const cleanHtml = getCleanMainContentHtml();
+      fullCode = `<!-- ROSHONA PRODUCTION ELEMENTOR TEMPLATE -->\n<div class="roshona-elementor-root">\n${cleanHtml}\n</div>`;
+    }
+
+    let modal = document.getElementById('el-export-modal');
+    if (!modal) {
+      modal = document.createElement('div');
+      modal.id = 'el-export-modal';
+      modal.className = 'el-modal-backdrop';
+      modal.innerHTML = `
+        <div class="el-modal-card" style="max-width: 760px;">
+          <div class="el-modal-header" style="background: linear-gradient(135deg, #143525 0%, #1e4d36 100%); color: #fff;">
+            <div>
+              <h3 class="el-modal-title" style="color: #fff; margin-bottom: 4px;">⚡ Elementor Production-Ready Code</h3>
+              <p style="font-size: 0.85rem; color: #d4b270; margin: 0;">সকল ডিজাইন (CSS), ফন্ট, ছবি ও ইন্টারঅ্যাক্টিভ স্ক্রিপ্ট সহ এক ফাইলে প্রস্তুত</p>
+            </div>
+            <button type="button" class="el-modal-close" id="el-export-modal-close" style="color: #fff;">&times;</button>
+          </div>
+          <div class="el-modal-body" style="padding: 1.25rem;">
+            <div style="background: #FAF7F0; border: 1.5px solid rgba(184, 148, 85, 0.4); border-radius: 12px; padding: 1rem; margin-bottom: 1.2rem;">
+              <div style="font-weight: 700; color: #143525; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem;">
+                <span>💡</span><span>Elementor-এ পেস্ট করার নিয়ম (৩টি সহজ ধাপ):</span>
+              </div>
+              <ol style="margin-left: 1.4rem; font-size: 0.9rem; color: #4B5A51; line-height: 1.6;">
+                <li>WordPress-এ নতুন পেজ খুলে <strong>"Edit with Elementor"</strong> এ যান।</li>
+                <li>নিচে বামের Settings (গিয়ার আইকন) এ ক্লিক করে <strong>Page Layout: "Elementor Canvas"</strong> দিন।</li>
+                <li>উইজেট থেকে একটি <strong>"HTML"</strong> উইজেট টেনে এনে নিচের সম্পূর্ণ কোডটি পেস্ট করে <strong>"Publish"</strong> করে দিন!</li>
+              </ol>
+            </div>
+
+            <div style="display: flex; gap: 0.75rem; margin-bottom: 1rem; flex-wrap: wrap;">
+              <button type="button" class="el-btn el-btn-primary" id="el-modal-copy-btn" style="flex: 1; min-height: 44px; font-weight: 700;">
+                <span>📋</span><span>১-ক্লিকে সম্পূর্ণ কোড কপি করুন (Copy Code)</span>
+              </button>
+              <button type="button" class="el-btn el-btn-save" id="el-modal-download-btn" style="flex: 1; min-height: 44px; font-weight: 700;">
+                <span>📥</span><span>HTML ফাইল ডাউনলোড করুন (.html)</span>
+              </button>
+            </div>
+
+            <div style="position: relative;">
+              <textarea id="el-export-textarea" readonly style="width: 100%; height: 260px; font-family: monospace; font-size: 0.82rem; padding: 0.75rem; border: 1.5px solid #d1d5db; border-radius: 8px; background: #1e1e1e; color: #4ec9b0; resize: vertical;"></textarea>
+            </div>
+          </div>
+          <div class="el-modal-footer">
+            <button type="button" class="el-btn el-btn-reset" id="el-export-modal-cancel">বন্ধ করুন</button>
+          </div>
+        </div>
+      `;
+      document.body.appendChild(modal);
+
+      const close = () => modal.classList.remove('open');
+      document.getElementById('el-export-modal-close').addEventListener('click', close);
+      document.getElementById('el-export-modal-cancel').addEventListener('click', close);
+      modal.addEventListener('click', (e) => {
+        if (e.target === modal) close();
+      });
+
+      document.getElementById('el-modal-copy-btn').addEventListener('click', () => {
+        const text = document.getElementById('el-export-textarea').value;
+        navigator.clipboard.writeText(text).then(() => {
+          showToast('সম্পূর্ণ Elementor কোড ক্লিপবোর্ডে কপি করা হয়েছে! Elementor HTML উইজেটে পেস্ট করুন।', '🎉');
+        }).catch(() => {
+          showToast('কপি করতে সমস্যা হয়েছে, ম্যানুয়ালি টেক্সট সিলেক্ট করুন', '⚠️');
+        });
+      });
+
+      document.getElementById('el-modal-download-btn').addEventListener('click', () => {
+        const text = document.getElementById('el-export-textarea').value;
+        const blob = new Blob([text], { type: 'text/html;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'roshona-elementor-ready.html';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        showToast('roshona-elementor-ready.html ডাউনলোড সম্পন্ন হয়েছে!', '📥');
+      });
+    }
+
+    const textarea = document.getElementById('el-export-textarea');
+    if (textarea) textarea.value = fullCode;
+
+    modal.classList.add('open');
+  }
+
   // Copy Clean HTML Code
   function copyCleanHtml() {
-    const cleanHtml = getCleanMainContentHtml();
-    navigator.clipboard.writeText(cleanHtml).then(() => {
-      showToast('ক্লিন HTML কোড ক্লিপবোর্ডে কপি করা হয়েছে!', '📋');
-    }).catch(() => {
-      showToast('কপি করতে সমস্যা হয়েছে', '⚠️');
-    });
+    openExportModal();
   }
 
   // ----------------------------------------------------

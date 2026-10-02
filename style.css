@@ -2178,6 +2178,155 @@ p {
   margin: 0 auto;
 }
 
+/* Official CartFlows Shortcode Container & Real WooCommerce Checkout Styling */
+.cartflows-shortcode-container {
+  max-width: 1040px;
+  margin: 0 auto;
+}
+
+/* Integration Notice Badge */
+.cartflows-integration-badge {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.85rem;
+  background: linear-gradient(135deg, #FAF7F0 0%, #F3EDE0 100%);
+  border: 1.5px solid rgba(184, 148, 85, 0.45);
+  border-radius: 14px;
+  padding: 1rem 1.25rem;
+  margin-bottom: 1.6rem;
+  box-shadow: 0 4px 14px rgba(20, 53, 37, 0.05);
+}
+
+.cf-badge-icon {
+  font-size: 1.4rem;
+  line-height: 1;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.cf-badge-text {
+  font-size: 0.92rem;
+  color: var(--forest-green);
+  line-height: 1.55;
+}
+
+.cf-badge-text code {
+  background: rgba(20, 53, 37, 0.08);
+  color: var(--forest-green);
+  padding: 0.15rem 0.45rem;
+  border-radius: 4px;
+  font-family: monospace;
+  font-weight: 700;
+}
+
+/* When WordPress renders real CartFlows/WooCommerce checkout, hide preview fallback */
+.cartflows-shortcode-container:has(.woocommerce-checkout) + #cartflows-order-form,
+.cartflows-shortcode-container:has(.wcf-embed-checkout-form) + #cartflows-order-form,
+.cartflows-shortcode-container:has(.woocommerce) + #cartflows-order-form,
+body.woocommerce-checkout #cartflows-order-form {
+  display: none !important;
+}
+
+/* Luxury Botanical Styling for Real CartFlows & WooCommerce Checkout */
+.cartflows-shortcode-container .woocommerce,
+.cartflows-shortcode-container .wcf-embed-checkout-form,
+.cartflows-shortcode-container form.woocommerce-checkout {
+  background: #ffffff;
+  border: 2px solid var(--gold);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 16px 42px rgba(24, 58, 42, 0.12);
+  padding: clamp(1.5rem, 3.5vw, 2.5rem);
+}
+
+.cartflows-shortcode-container .woocommerce-billing-fields h3,
+.cartflows-shortcode-container #order_review_heading {
+  font-family: var(--font-heading);
+  color: var(--forest-green);
+  font-size: clamp(1.3rem, 2vw, 1.6rem);
+  font-weight: 700;
+  margin-bottom: 1.25rem;
+  border-bottom: 2px solid rgba(184, 148, 85, 0.25);
+  padding-bottom: 0.5rem;
+}
+
+.cartflows-shortcode-container .form-row label {
+  font-weight: 700;
+  color: var(--forest-green);
+  margin-bottom: 0.35rem;
+  display: block;
+}
+
+.cartflows-shortcode-container .woocommerce-input-wrapper input,
+.cartflows-shortcode-container .woocommerce-input-wrapper textarea,
+.cartflows-shortcode-container .woocommerce-input-wrapper select {
+  width: 100%;
+  padding: 0.85rem 1.1rem;
+  border: 1.5px solid rgba(20, 53, 37, 0.2);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-body);
+  font-size: 1rem;
+  color: var(--text);
+  background: #FCFBF8;
+  transition: var(--transition-smooth);
+}
+
+.cartflows-shortcode-container .woocommerce-input-wrapper input:focus,
+.cartflows-shortcode-container .woocommerce-input-wrapper textarea:focus,
+.cartflows-shortcode-container .woocommerce-input-wrapper select:focus {
+  border-color: var(--forest-green);
+  outline: none;
+  background: #ffffff;
+  box-shadow: 0 0 0 3px rgba(30, 77, 54, 0.15);
+}
+
+.cartflows-shortcode-container #place_order,
+.cartflows-shortcode-container button.button.alt#place_order {
+  width: 100%;
+  padding: 1.1rem 2rem;
+  font-family: var(--font-body);
+  font-size: clamp(1.1rem, 2vw, 1.25rem);
+  font-weight: 800;
+  background: linear-gradient(135deg, #B89455 0%, #997534 100%) !important;
+  color: #ffffff !important;
+  border: none !important;
+  border-radius: var(--radius-md) !important;
+  cursor: pointer;
+  box-shadow: 0 8px 24px rgba(184, 148, 85, 0.4) !important;
+  transition: var(--transition-smooth);
+  margin-top: 1.25rem;
+  text-align: center;
+}
+
+.cartflows-shortcode-container #place_order:hover,
+.cartflows-shortcode-container button.button.alt#place_order:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 30px rgba(184, 148, 85, 0.5) !important;
+  background: linear-gradient(135deg, #C5A059 0%, #8C6A2E 100%) !important;
+}
+
+.cartflows-shortcode-container table.woocommerce-checkout-review-order-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 1.5rem;
+  background: #FAF7F0;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  border: 1px solid rgba(184, 148, 85, 0.3);
+}
+
+.cartflows-shortcode-container table.woocommerce-checkout-review-order-table th,
+.cartflows-shortcode-container table.woocommerce-checkout-review-order-table td {
+  padding: 0.85rem 1rem;
+  border-bottom: 1px solid rgba(184, 148, 85, 0.2);
+}
+
+.cartflows-shortcode-container table.woocommerce-checkout-review-order-table tfoot tr.order-total th,
+.cartflows-shortcode-container table.woocommerce-checkout-review-order-table tfoot tr.order-total td {
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: var(--forest-green);
+}
+
 /* Package Options (CartFlows Product Selection) */
 .cartflows-packages-wrap {
   background: #ffffff;
