@@ -62,19 +62,63 @@
   }
 
   // ====================================================
-  // 2. Smooth Scroll & CTA Event Triggers
+  // 2. Smooth Scroll & CTA Event Triggers (Linked to CartFlows Checkout Form)
   // ====================================================
-  const ctaButtons = document.querySelectorAll('[data-cta-scroll]');
-  ctaButtons.forEach(btn => {
+  const allOrderButtons = document.querySelectorAll(
+    '[data-cta-scroll], a[href*="cartflows-order"], .header-order-btn, .sticky-cta-btn, a[href="#cartflows-order"]'
+  );
+
+  allOrderButtons.forEach(btn => {
     btn.addEventListener('click', (e) => {
-      const targetId = btn.getAttribute('data-cta-scroll');
-      const targetEl = document.getElementById(targetId);
-      if (targetEl) {
-        e.preventDefault();
-        targetEl.scrollIntoView({ behavior: 'smooth' });
+      e.preventDefault();
+      
+      // Close mobile navigation drawer if open
+      if (navDrawer && navDrawer.classList.contains('open')) {
+        navDrawer.classList.remove('open');
+        if (menuToggle) menuToggle.setAttribute('aria-expanded', 'false');
+      }
+
+      // Find CartFlows Checkout target element
+      const target = 
+        document.getElementById('cartflows-order') || 
+        document.getElementById('cartflows-checkout-wrapper') ||
+        document.getElementById('wcf-embed-checkout-form') ||
+        document.querySelector('.wcf-embed-checkout-form') ||
+        document.querySelector('.cartflows-section');
+
+      if (target) {
+        const headerOffset = 80;
+        const targetRect = target.getBoundingClientRect();
+        const targetTop = targetRect.top + window.pageYOffset - headerOffset;
+
+        window.scrollTo({
+          top: targetTop,
+          behavior: 'smooth'
+        });
+
+        // Update URL hash cleanly without causing page jump
+        if (window.history && window.history.pushState) {
+          window.history.pushState(null, null, '#cartflows-order');
+        }
+
+        // Focus first input field in CartFlows form after scroll completes
+        setTimeout(() => {
+          const firstField = target.querySelector(
+            'input#billing_first_name, input[name="billing_first_name"], input#billing_phone, input[type="text"], input[type="tel"]'
+          );
+          if (firstField) {
+            firstField.focus();
+            target.style.transition = 'box-shadow 0.4s ease';
+            target.style.boxShadow = '0 0 0 4px rgba(184, 148, 85, 0.45)';
+            setTimeout(() => {
+              target.style.boxShadow = '';
+            }, 1200);
+          }
+        }, 650);
+
         logTrackingEvent('cta_click', {
           cta_label: btn.textContent.trim(),
-          target_section: targetId
+          target_section: 'cartflows-order'
         });
       }
     });
@@ -288,199 +332,282 @@
   }
 
   // ====================================================
-  // 5. CartFlows Order Calculator & Interaction
+  // 5. CartFlows Checkout Preview & Integration
   // ====================================================
-  // Detect if WordPress / CartFlows rendered real WooCommerce checkout form
-  const cfShortcodeContainer = document.getElementById('cartflows-shortcode-container');
-  const staticOrderForm = document.getElementById('cartflows-order-form');
+  const cfWrapper = document.getElementById('cartflows-checkout-wrapper');
 
-  if (cfShortcodeContainer && staticOrderForm) {
-    const isWpRendered = cfShortcodeContainer.querySelector('form.woocommerce-checkout, .wcf-embed-checkout-form, .woocommerce');
-    if (isWpRendered) {
-      staticOrderForm.style.display = 'none';
-      cfShortcodeContainer.style.display = 'block';
-    } else {
-      // In static browser preview: hide raw string [cartflows_checkout] so visitor sees interactive preview form
-      cfShortcodeContainer.style.display = 'none';
-      staticOrderForm.style.display = 'block';
+  // In static preview sandbox (where WordPress PHP does not run),
+  // render an interactive visual preview matching CartFlows step 149
+  const cfShortcodeToken = '[' + 'cartflows_checkout' + ']';
+  if (cfWrapper && cfWrapper.innerHTML.includes(cfShortcodeToken)) {
+    cfWrapper.innerHTML = `
+      <div id="wcf-embed-checkout-form" class="wcf-embed-checkout-form wcf-embed-checkout-form-modern-checkout wcf-field-default">
+        <div class="woocommerce">
+          <form name="checkout" method="post" class="checkout woocommerce-checkout" action="#">
+            
+            <!-- 1. Customer Information & Billing Details Card -->
+            <div class="wcf-customer-info-main-wrapper">
+              <div class="wcf-customer-info" id="customer_info">
+                <h3 id="customer_information_heading">🌿 Customer information</h3>
+                <div class="woocommerce-billing-fields__customer-info-wrapper">
+                  <p class="form-row form-row-fill">
+                    <label for="billing_email">Email Address (ঐচ্ছিক)</label>
+                    <span class="woocommerce-input-wrapper">
+                      <input type="email" class="input-text" name="billing_email" id="billing_email" placeholder="Email Address" />
+                    </span>
+                  </p>
+                </div>
+              </div>
+
+              <div class="woocommerce-billing-fields">
+                <h3 id="billing_fields_heading">📋 Billing details</h3>
+                <div class="woocommerce-billing-fields__field-wrapper">
+                  <p class="form-row form-row-wide validate-required" id="billing_first_name_field">
+                    <label for="billing_first_name" class="required_field">সম্পূর্ণ নাম <span class="required">*</span></label>
+                    <span class="woocommerce-input-wrapper">
+                      <input type="text" class="input-text" name="billing_first_name" id="billing_first_name" placeholder="আপনার সম্পূর্ণ নাম লিখুন" required />
+                    </span>
+                  </p>
+                  <p class="form-row form-row-wide address-field validate-required" id="billing_address_1_field">
+                    <label for="billing_address_1" class="required_field">সম্পূর্ণ ঠিকানা <span class="required">*</span></label>
+                    <span class="woocommerce-input-wrapper">
+                      <input type="text" class="input-text" name="billing_address_1" id="billing_address_1" placeholder="বাসা/হোল্ডিং নম্বর, রোড, এলাকা, থানা ও জেলা" required />
+                    </span>
+                  </p>
+                  <p class="form-row form-row-wide validate-required" id="billing_phone_field">
+                    <label for="billing_phone" class="required_field">ফোন নম্বর <span class="required">*</span></label>
+                    <span class="woocommerce-input-wrapper">
+                      <input type="tel" class="input-text" name="billing_phone" id="billing_phone" placeholder="১১ ডিজিটের মোবাইল নম্বর লিখুন" required />
+                    </span>
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <!-- 2. Shipping Methods Card -->
+            <div class="wcf-customer-shipping">
+              <div class="wcf-shipping-methods-wrapper">
+                <h3 class="wcf-shipping-methods-title">🚚 Shipping</h3>
+                <ul id="shipping_method" class="woocommerce-shipping-methods">
+                  <li>
+                    <input type="radio" name="shipping_method[0]" data-index="0" id="shipping_method_0_dhaka" value="flat_rate:1" class="shipping_method" checked />
+                    <label for="shipping_method_0_dhaka">In Side Dhaka: <strong>৳৮০</strong></label>
+                  </li>
+                  <li>
+                    <input type="radio" name="shipping_method[0]" data-index="0" id="shipping_method_0_outside" value="flat_rate:2" class="shipping_method" />
+                    <label for="shipping_method_0_outside">Out Side Dhaka: <strong>৳১২০</strong></label>
+                  </li>
+                </ul>
+              </div>
+            </div>
+
+            <!-- 3. Your Order Review Card -->
+            <div class="wcf-order-wrap">
+              <h3 id="order_review_heading">📦 Your order</h3>
+              <div id="order_review" class="woocommerce-checkout-review-order">
+                <table class="shop_table woocommerce-checkout-review-order-table cartflows_table">
+                  <thead>
+                    <tr>
+                      <th class="product-name">Product</th>
+                      <th class="product-total" style="text-align: right;">Subtotal</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr class="cart_item">
+                      <td class="product-name">
+                        <strong>Roshona Rosemary Coconut Hair Oil</strong> &times;&nbsp;1
+                      </td>
+                      <td class="product-total" style="text-align: right;">
+                        <span class="woocommerce-Price-amount amount">৳499</span>
+                      </td>
+                    </tr>
+                  </tbody>
+                  <tfoot>
+                    <tr class="cart-subtotal">
+                      <th>Subtotal</th>
+                      <td style="text-align: right;"><span class="woocommerce-Price-amount amount">৳499</span></td>
+                    </tr>
+                    <tr class="woocommerce-shipping-totals shipping">
+                      <th>Shipping</th>
+                      <td style="text-align: right;" id="wcf-preview-shipping">৳80</td>
+                    </tr>
+                    <tr class="order-total">
+                      <th>Total</th>
+                      <td style="text-align: right;"><strong><span class="woocommerce-Price-amount amount" id="wcf-preview-total">৳579</span></strong></td>
+                    </tr>
+                  </tfoot>
+                </table>
+              </div>
+            </div>
+
+            <!-- 4. Payment & Place Order Card -->
+            <div id="payment" class="woocommerce-checkout-payment">
+              <h3 style="font-size: 1.3rem; font-weight: 700; color: #143525; margin-bottom: 1rem; border-bottom: 2px solid rgba(184, 148, 85, 0.25); padding-bottom: 0.5rem;">💵 Payment</h3>
+              <ul class="wc_payment_methods payment_methods methods">
+                <li class="wc_payment_method payment_method_cod">
+                  <input id="payment_method_cod" type="radio" class="input-radio" name="payment_method" value="cod" checked="checked" />
+                  <label for="payment_method_cod">Cash on delivery</label>
+                  <div class="payment_box payment_method_cod">
+                    <p>পণ্য হাতে পেয়ে দেখে মূল্য পরিশোধ করুন। কোনো অগ্রিম পেমেন্টের ঝুঁকি নেই।</p>
+                  </div>
+                </li>
+              </ul>
+              <button type="submit" class="button alt" name="woocommerce_checkout_place_order" id="place_order" value="অর্ডার কনফার্ম করুন">
+                <span>🛒</span> <span>অর্ডার কনফার্ম করুন (Place Order)</span>
+              </button>
+            </div>
+
+          </form>
+        </div>
+      </div>
+    `;
+
+    // Interactive Shipping calculation in preview
+    const shipDhaka = document.getElementById('shipping_method_0_dhaka');
+    const shipOutside = document.getElementById('shipping_method_0_outside');
+    const previewShipping = document.getElementById('wcf-preview-shipping');
+    const previewTotal = document.getElementById('wcf-preview-total');
+
+    function updatePreviewTotal() {
+      const isOutside = shipOutside && shipOutside.checked;
+      const fee = isOutside ? 120 : 80;
+      if (previewShipping) previewShipping.textContent = `৳${fee}`;
+      if (previewTotal) previewTotal.textContent = `৳${499 + fee}`;
+    }
+
+    if (shipDhaka) shipDhaka.addEventListener('change', updatePreviewTotal);
+    if (shipOutside) shipOutside.addEventListener('change', updatePreviewTotal);
+
+    // Form submit preview handler (for static testing)
+    const previewForm = cfWrapper.querySelector('form.checkout');
+    if (previewForm) {
+      previewForm.addEventListener('submit', (e) => {
+        // If this is a real WooCommerce form on a live site, let WooCommerce handle it
+        if (previewForm.getAttribute('action') && previewForm.getAttribute('action') !== '#') {
+          return; // Let live WooCommerce process the order and redirect
+        }
+
+        e.preventDefault();
+        const nameInput = document.getElementById('billing_first_name');
+        const phoneInput = document.getElementById('billing_phone');
+        const addrInput = document.getElementById('billing_address_1');
+
+        if (!nameInput?.value.trim() || !phoneInput?.value.trim() || !addrInput?.value.trim()) {
+          alert('⚠️ অনুগ্রহ করে আপনার নাম, সচল মোবাইল নম্বর এবং সম্পূর্ণ ডেলিভারি ঠিকানা পূরণ করুন।');
+          return;
+        }
+
+        const modal = document.getElementById('order-modal');
+        const details = document.getElementById('modal-receipt-details');
+        if (details) {
+          details.innerHTML = `
+            <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px; margin-bottom: 12px; font-size: 0.95rem; line-height: 1.6;">
+              <p style="margin: 0 0 6px 0;"><strong>গ্রাহকের নাম:</strong> ${escapeHtml(nameInput.value)}</p>
+              <p style="margin: 0 0 6px 0;"><strong>মোবাইল নম্বর:</strong> ${escapeHtml(phoneInput.value)}</p>
+              <p style="margin: 0 0 6px 0;"><strong>ডেলিভারি ঠিকানা:</strong> ${escapeHtml(addrInput.value)}</p>
+              <p style="margin: 0 0 6px 0;"><strong>প্রডাক্ট:</strong> Roshona Rosemary Coconut Hair Oil × 1</p>
+              <p style="margin: 0; font-size: 1.1rem; color: #183A2A;"><strong>সর্বমোট প্রদেয় বিল (COD): ${previewTotal?.textContent || '৳579'}</strong></p>
+            </div>
+          `;
+        }
+        if (modal) modal.classList.add('active');
+      });
     }
   }
 
-  const qtyMinus = document.getElementById('qty-minus');
-  const qtyPlus = document.getElementById('qty-plus');
-  const qtyInput = document.getElementById('order-quantity');
-  const productPriceEl = document.getElementById('product-price');
-  const summarySubtotalEl = document.getElementById('summary-subtotal');
-  const deliveryChargeEl = document.getElementById('delivery-charge');
-  const orderTotalEl = document.getElementById('order-total');
-  const btnTotalValEl = document.getElementById('btn-total-val');
-  const summaryQtyEl = document.getElementById('summary-qty');
-  const errorBanner = document.getElementById('cartflows-error-msg');
-  const packageRadios = document.querySelectorAll('input[name="product_package"]');
-  const shippingRadios = document.querySelectorAll('input[name="shipping_location"]');
-
-  let activePackagePrice = 499;
-
-  function calculateSubtotal() {
-    // If quantity matches standard packages, apply package bundle pricing
-    if (currentQuantity === 1) return 499;
-    if (currentQuantity === 2) return 899;
-    if (currentQuantity === 3) return 1250;
-    return currentQuantity * 450; // Custom volume discount
-  }
-
-  function updateOrderTotals() {
-    const subtotal = calculateSubtotal();
-    const total = subtotal + deliveryFee;
-
-    if (productPriceEl) productPriceEl.textContent = `৳${subtotal}`;
-    if (summarySubtotalEl) summarySubtotalEl.textContent = `৳${subtotal}`;
-    if (deliveryChargeEl) deliveryChargeEl.textContent = `৳${deliveryFee}`;
-    if (orderTotalEl) orderTotalEl.textContent = `৳${total}`;
-    if (btnTotalValEl) btnTotalValEl.textContent = `৳${total}`;
-    if (summaryQtyEl) summaryQtyEl.textContent = currentQuantity;
-
-    // Sync package radio card active classes
-    packageRadios.forEach(radio => {
-      const card = radio.closest('.cartflows-package-card');
-      if (card) {
-        const isMatch = parseInt(radio.dataset.qty, 10) === currentQuantity;
-        card.classList.toggle('active', isMatch);
-        if (isMatch) radio.checked = true;
+  // ====================================================
+  // 6. Universal CartFlows & WooCommerce Mobile Checkout Fix
+  // Fixes "No shipping method has been selected" & ensures auto-redirect to Thank You page
+  // ====================================================
+  function fixWooCommerceCheckoutPayload() {
+    const allCheckoutForms = document.querySelectorAll('form.checkout, form.woocommerce-checkout');
+    allCheckoutForms.forEach(form => {
+      // 1. Ensure Country is always passed as BD (Bangladesh)
+      let bCountry = form.querySelector('input[name="billing_country"]');
+      if (!bCountry) {
+        bCountry = document.createElement('input');
+        bCountry.type = 'hidden';
+        bCountry.name = 'billing_country';
+        bCountry.id = 'billing_country';
+        form.appendChild(bCountry);
       }
-    });
-  }
+      bCountry.value = 'BD';
 
-  // Package Radio Change Listeners
-  packageRadios.forEach(radio => {
-    radio.addEventListener('change', () => {
-      const qty = parseInt(radio.dataset.qty, 10);
-      if (!isNaN(qty)) {
-        currentQuantity = qty;
-        if (qtyInput) qtyInput.value = currentQuantity;
-        updateOrderTotals();
+      let sCountry = form.querySelector('input[name="shipping_country"]');
+      if (!sCountry) {
+        sCountry = document.createElement('input');
+        sCountry.type = 'hidden';
+        sCountry.name = 'shipping_country';
+        sCountry.id = 'shipping_country';
+        form.appendChild(sCountry);
       }
-    });
-  });
+      sCountry.value = 'BD';
 
-  // Shipping Radios Change Listeners
-  shippingRadios.forEach(radio => {
-    radio.addEventListener('change', () => {
-      const fee = parseInt(radio.dataset.fee, 10);
-      if (!isNaN(fee)) {
-        deliveryFee = fee;
-        shippingRadios.forEach(r => {
-          const item = r.closest('.shipping-radio-item');
-          if (item) item.classList.toggle('active', r.checked);
-        });
-        updateOrderTotals();
-      }
-    });
-  });
-
-  // Quantity Stepper Handlers
-  if (qtyMinus && qtyPlus && qtyInput) {
-    qtyMinus.addEventListener('click', () => {
-      if (currentQuantity > 1) {
-        currentQuantity--;
-        qtyInput.value = currentQuantity;
-        updateOrderTotals();
-      }
-    });
-
-    qtyPlus.addEventListener('click', () => {
-      if (currentQuantity < 10) {
-        currentQuantity++;
-        qtyInput.value = currentQuantity;
-        updateOrderTotals();
-      }
-    });
-
-    qtyInput.addEventListener('change', () => {
-      let val = parseInt(qtyInput.value, 10);
-      if (isNaN(val) || val < 1) val = 1;
-      if (val > 10) val = 10;
-      currentQuantity = val;
-      qtyInput.value = currentQuantity;
-      updateOrderTotals();
-    });
-  }
-
-  // Order Form Submission Simulation & Confirmation Modal
-  const orderForm = document.getElementById('cartflows-order-form');
-  const orderModal = document.getElementById('order-modal');
-  const orderModalClose = document.getElementById('order-modal-close');
-  const modalReceiptDetails = document.getElementById('modal-receipt-details');
-
-  if (orderForm) {
-    orderForm.addEventListener('submit', (e) => {
-      e.preventDefault();
-
-      if (errorBanner) {
-        errorBanner.style.display = 'none';
-        errorBanner.textContent = '';
+      // 2. Ensure default City is passed
+      let bCity = form.querySelector('input[name="billing_city"]');
+      if (!bCity) {
+        bCity = document.createElement('input');
+        bCity.type = 'hidden';
+        bCity.name = 'billing_city';
+        bCity.id = 'billing_city';
+        bCity.value = 'Dhaka';
+        form.appendChild(bCity);
+      } else if (!bCity.value) {
+        bCity.value = 'Dhaka';
       }
 
-      const name = document.getElementById('billing_first_name')?.value.trim();
-      const phone = document.getElementById('billing_phone')?.value.trim();
-      const address = document.getElementById('billing_address_1')?.value.trim();
-      const selectedShipping = document.querySelector('input[name="shipping_location"]:checked');
-      const locationText = selectedShipping && selectedShipping.value === 'Dhaka' ? 'ঢাকার ভেতরে (হোম ডেলিভারি)' : 'ঢাকার বাইরে (সারা বাংলাদেশ)';
-
-      // Validation
-      if (!name || !phone || !address) {
-        if (errorBanner) {
-          errorBanner.textContent = '⚠️ অনুগ্রহ করে আপনার পূর্ণ নাম, সচল মোবাইল নম্বর এবং সম্পূর্ণ ডেলিভারি ঠিকানা প্রদান করুন।';
-          errorBanner.style.display = 'block';
-          errorBanner.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }
-        return;
+      // 3. Ensure Cash on Delivery (COD) is selected
+      let codRadio = form.querySelector('input[name="payment_method"][value="cod"]');
+      if (codRadio && !codRadio.checked) {
+        codRadio.checked = true;
       }
 
-      // Check phone number format (Bangladeshi 11 digits, begins with 01)
-      const phoneRegex = /^01[3-9]\d{8}$/;
-      const cleanedPhone = phone.replace(/[^0-9]/g, '');
-      if (!phoneRegex.test(cleanedPhone)) {
-        if (errorBanner) {
-          errorBanner.textContent = '⚠️ অনুগ্রহ করে সঠিক ১১ ডিজিটের মোবাইল নম্বর দিন (যেমনঃ 017XXXXXXXX বা 018XXXXXXXX)।';
-          errorBanner.style.display = 'block';
-          errorBanner.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }
-        return;
-      }
-
-      const subtotal = calculateSubtotal();
-      const total = subtotal + deliveryFee;
-
-      // Log initiate_checkout tracking event
-      logTrackingEvent('InitiateCheckout', {
-        content_name: 'Roshona Rosemary Coconut Hair Oil',
-        quantity: currentQuantity,
-        value: total,
-        currency: 'BDT',
-        customer_phone: cleanedPhone,
-        customer_location: locationText
+      // 4. Ensure Shipping Method is ALWAYS present and selected
+      const shippingRadios = form.querySelectorAll('input[name^="shipping_method"]');
+      let isShippingChecked = false;
+      shippingRadios.forEach(radio => {
+        if (radio.checked) isShippingChecked = true;
       });
 
-      // Display receipt in modal
-      if (modalReceiptDetails) {
-        modalReceiptDetails.innerHTML = `
-          <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px; margin-bottom: 12px; font-size: 0.95rem; line-height: 1.6;">
-            <p style="margin: 0 0 6px 0;"><strong>গ্রাহকের নাম:</strong> ${escapeHtml(name)}</p>
-            <p style="margin: 0 0 6px 0;"><strong>মোবাইল নম্বর:</strong> ${escapeHtml(cleanedPhone)}</p>
-            <p style="margin: 0 0 6px 0;"><strong>ডেলিভারি ঠিকানা:</strong> ${escapeHtml(address)} (${escapeHtml(locationText)})</p>
-            <p style="margin: 0 0 6px 0;"><strong>অর্ডারকৃত প্যাকেজ:</strong> Roshona Hair Oil × ${currentQuantity} বোতল</p>
-            <p style="margin: 0; font-size: 1.1rem; color: #183A2A;"><strong>সর্বমোট প্রদেয় বিল (COD): ৳${total}</strong></p>
-          </div>
-        `;
-      }
-
-      if (orderModal) {
-        orderModal.classList.add('active');
+      if (!isShippingChecked && shippingRadios.length > 0) {
+        shippingRadios[0].checked = true;
+        shippingRadios[0].dispatchEvent(new Event('change', { bubbles: true }));
+      } else if (shippingRadios.length === 0) {
+        // If WooCommerce shipping options failed to render, inject default shipping method
+        let fallbackShip = form.querySelector('input[name="shipping_method[0]"]');
+        if (!fallbackShip) {
+          fallbackShip = document.createElement('input');
+          fallbackShip.type = 'hidden';
+          fallbackShip.name = 'shipping_method[0]';
+          fallbackShip.value = 'flat_rate:1';
+          form.appendChild(fallbackShip);
+        }
       }
     });
   }
 
+  // Run on page load, intervals, and checkout submit
+  document.addEventListener('DOMContentLoaded', fixWooCommerceCheckoutPayload);
+  window.addEventListener('load', fixWooCommerceCheckoutPayload);
+  setInterval(fixWooCommerceCheckoutPayload, 1200);
+
+  // Capture checkout submit before WooCommerce validates
+  document.addEventListener('submit', function (e) {
+    const form = e.target.closest('form.checkout');
+    if (form) {
+      fixWooCommerceCheckoutPayload();
+    }
+  }, true);
+
+  // Hook into WooCommerce jQuery events if present on live WordPress
+  if (typeof window !== 'undefined' && window.jQuery) {
+    window.jQuery(document.body).on('updated_checkout init_checkout checkout_error', function () {
+      fixWooCommerceCheckoutPayload();
+    });
+  }
+
+  const orderModal = document.getElementById('order-modal');
+  const orderModalClose = document.getElementById('order-modal-close');
   if (orderModalClose && orderModal) {
     orderModalClose.addEventListener('click', () => {
       orderModal.classList.remove('active');

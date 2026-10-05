@@ -6,12 +6,22 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const indexHtml = fs.readFileSync(path.join(__dirname, 'index.html'), 'utf8');
-const styleCss = fs.readFileSync(path.join(__dirname, 'style.css'), 'utf8');
+let styleCss = fs.readFileSync(path.join(__dirname, 'style.css'), 'utf8');
 const scriptJs = fs.readFileSync(path.join(__dirname, 'script.js'), 'utf8');
+
+// Ensure fade-up is 100% visible by default
+styleCss = styleCss.replace(
+  /\.fade-up\s*\{[^}]*\}/g,
+  '.fade-up { opacity: 1 !important; transform: none !important; visibility: visible !important; }'
+);
+styleCss = styleCss.replace(
+  /\.fade-up\.in-view\s*\{[^}]*\}/g,
+  '.fade-up.in-view { opacity: 1 !important; transform: none !important; visibility: visible !important; }'
+);
 
 // Extract body inner content from index.html (excluding builder script)
 const bodyStart = indexHtml.indexOf('<body>');
-const bodyEnd = indexHtml.indexOf('<!-- Visual Elementor-style Builder Script -->');
+const bodyEnd = indexHtml.indexOf('<!-- Production Vanilla JavaScript -->');
 
 let bodyContent = '';
 if (bodyStart !== -1 && bodyEnd !== -1) {
@@ -28,20 +38,17 @@ bodyContent = bodyContent.trim();
 const elementorTemplate = `<!-- ==========================================================================
    ROSHONA ROSEMARY COCONUT HAIR OIL - PRODUCTION-READY ELEMENTOR TEMPLATE
    Instructions:
-   1. In WordPress, create or edit your page with Elementor.
-   2. Set Page Layout to "Elementor Canvas" (in Page Settings at bottom left).
+   1. In WordPress, open or create your page in Elementor.
+   2. Set Page Layout to "Elementor Canvas" (Page Settings at bottom left ⚙️).
    3. Drag an "HTML" widget into the section.
    4. Paste this entire code block into the HTML widget.
    5. Click "Update" or "Publish". Done!
    ========================================================================== -->
 
-<!-- Google Fonts Preconnect & Stylesheets -->
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,400&family=Inter:wght@400;500;600;700&family=Noto+Sans+Bengali:wght@400;500;600;700&family=Noto+Serif+Bengali:wght@600;700&display=swap" rel="stylesheet">
-
-<!-- Production Stylesheet -->
+<!-- Production Stylesheet with Google Fonts -->
 <style>
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,400&family=Inter:wght@400;500;600;700&family=Noto+Sans+Bengali:wght@400;500;600;700&family=Noto+Serif+Bengali:wght@600;700&display=swap');
+
 ${styleCss}
 </style>
 
@@ -69,4 +76,5 @@ ${scriptJs}
 `;
 
 fs.writeFileSync(path.join(__dirname, 'roshona-elementor-ready.html'), elementorTemplate, 'utf8');
+fs.writeFileSync(path.join(__dirname, 'public', 'roshona-elementor-ready.html'), elementorTemplate, 'utf8');
 console.log('Successfully generated roshona-elementor-ready.html! Size:', elementorTemplate.length, 'bytes');

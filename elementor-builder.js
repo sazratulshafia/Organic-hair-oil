@@ -7,7 +7,7 @@
 (function () {
   'use strict';
 
-  const STORAGE_KEY = 'roshona_elementor_saved_content_v3';
+  const STORAGE_KEY = 'roshona_elementor_saved_content_v4_cartflows';
   let isEditMode = false;
   let activeElement = null;
   let lastActiveElement = null;
@@ -76,10 +76,26 @@
 
   // Restore saved content from localStorage if present
   function restoreSavedContent() {
+    try {
+      // Clear out any old versions of localStorage containing outdated custom forms or badges
+      Object.keys(localStorage).forEach(key => {
+        if (key.includes('roshona_elementor_saved')) {
+          const val = localStorage.getItem(key);
+          if (val && (val.includes('cartflows-order-form') || val.includes('cartflows-step-badge') || val.includes('১-স্টেপ দ্রুত চেকআউট') || key !== STORAGE_KEY)) {
+            localStorage.removeItem(key);
+          }
+        }
+      });
+    } catch (e) {}
+
     const saved = localStorage.getItem(STORAGE_KEY);
     if (!saved) return;
 
     try {
+      if (saved.includes('cartflows-order-form') || saved.includes('cartflows-step-badge')) {
+        localStorage.removeItem(STORAGE_KEY);
+        return;
+      }
       const mainContent = document.getElementById('main-content');
       if (mainContent && saved.trim().length > 50) {
         mainContent.innerHTML = saved;
@@ -90,15 +106,11 @@
     }
   }
 
-  // Generate clean HTML snapshot without editor attributes/handles
-  function getCleanMainContentHtml() {
-    const main = document.getElementById('main-content');
-    if (!main) return '';
-
-    const clone = main.cloneNode(true);
-    // Remove all builder handles and overlays
-    clone.querySelectorAll('.el-section-bar, .el-image-overlay, .el-mini-toolbar').forEach(el => el.remove());
-    // Remove builder attributes
+  // Helper to clean any cloned element of editor attributes and overlays
+  function cleanNode(node) {
+    if (!node) return null;
+    const clone = node.cloneNode(true);
+    clone.querySelectorAll('.el-section-bar, .el-image-overlay, .el-mini-toolbar, #el-dock, #el-toast, .el-modal-backdrop, #el-export-modal, #el-image-modal').forEach(el => el.remove());
     clone.querySelectorAll('[data-el-editable]').forEach(el => {
       el.removeAttribute('data-el-editable');
       el.removeAttribute('contenteditable');
@@ -106,8 +118,70 @@
     clone.querySelectorAll('.el-image-wrapper').forEach(el => {
       el.classList.remove('el-image-wrapper');
     });
+    return clone;
+  }
 
-    return clone.innerHTML;
+  // Generate clean full page HTML including Announcement, Header, Main sections, Footer, Aside (Mobile Sticky CTA), and Modals
+  function getFullCleanPageHtml() {
+    const parts = [];
+
+    // 1. Top Announcement
+    const ann = document.querySelector('aside.announcement-bar, .announcement-bar, .top-announcement');
+    if (ann) {
+      const c = cleanNode(ann);
+      if (c) parts.push(c.outerHTML);
+    }
+
+    // 2. Site Header
+    const hdr = document.querySelector('.site-header');
+    if (hdr) {
+      const c = cleanNode(hdr);
+      if (c) parts.push(c.outerHTML);
+    }
+
+    // 3. Main Content
+    const main = document.getElementById('main-content');
+    if (main) {
+      const c = cleanNode(main);
+      if (c) parts.push(c.outerHTML);
+    }
+
+    // 4. Site Footer
+    const ftr = document.querySelector('footer.site-footer');
+    if (ftr) {
+      const c = cleanNode(ftr);
+      if (c) parts.push(c.outerHTML);
+    }
+
+    // 5. Mobile Sticky CTA (aside)
+    const aside = document.querySelector('aside.mobile-sticky-cta, .mobile-sticky-cta');
+    if (aside) {
+      const c = cleanNode(aside);
+      if (c) parts.push(c.outerHTML);
+    }
+
+    // 6. Modals
+    const ordModal = document.getElementById('order-modal');
+    if (ordModal) {
+      const c = cleanNode(ordModal);
+      if (c) parts.push(c.outerHTML);
+    }
+    const polModal = document.getElementById('policy-modal');
+    if (polModal) {
+      const c = cleanNode(polModal);
+      if (c) parts.push(c.outerHTML);
+    }
+
+    return parts.join('\n\n');
+  }
+
+  // Generate clean HTML snapshot without editor attributes/handles
+  function getCleanMainContentHtml() {
+    const main = document.getElementById('main-content');
+    if (!main) return '';
+
+    const clone = cleanNode(main);
+    return clone ? clone.innerHTML : '';
   }
 
   // Save current state
@@ -130,18 +204,29 @@
   // Open Complete Elementor Ready Code Modal
   async function openExportModal() {
     let fullCode = '';
+
     try {
-      const res = await fetch('/roshona-elementor-ready.html');
+      const res = await fetch('/roshona-elementor-ready.html?v=' + Date.now());
       if (res.ok) {
         fullCode = await res.text();
       }
     } catch (e) {
-      console.warn('Failed to fetch static template, building dynamically', e);
+      console.warn('Failed to fetch roshona-elementor-ready.html', e);
+    }
+
+    // Use full clean page HTML (including Header, Main, Footer, Aside, and Modals)
+    const fullCleanHtml = getFullCleanPageHtml();
+    if (fullCode && fullCleanHtml && fullCleanHtml.trim().length > 100) {
+      const rootOpen = '<div class="roshona-elementor-root">';
+      const rootStart = fullCode.indexOf(rootOpen);
+      const rootEnd = fullCode.lastIndexOf('</div>\n\n<!-- Production JavaScript Functionality -->');
+      if (rootStart !== -1 && rootEnd !== -1) {
+        fullCode = fullCode.substring(0, rootStart + rootOpen.length) + '\n' + fullCleanHtml + '\n' + fullCode.substring(rootEnd);
+      }
     }
 
     if (!fullCode) {
-      const cleanHtml = getCleanMainContentHtml();
-      fullCode = `<!-- ROSHONA PRODUCTION ELEMENTOR TEMPLATE -->\n<div class="roshona-elementor-root">\n${cleanHtml}\n</div>`;
+      fullCode = `<!-- ROSHONA PRODUCTION ELEMENTOR TEMPLATE -->\n<div class="roshona-elementor-root">\n${fullCleanHtml}\n</div>`;
     }
 
     let modal = document.getElementById('el-export-modal');

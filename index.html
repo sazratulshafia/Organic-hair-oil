@@ -26,6 +26,10 @@
     <link rel="canonical" href="https://roshona.com/" />
     <link rel="icon" type="image/webp" href="https://sazratul.com/wp-content/uploads/2026/10/roshona_logo_primary_uploaded-e1790859800659.webp" />
 
+    <!-- Preload Critical Above-The-Fold Hero Assets -->
+    <link rel="preload" as="image" href="https://sazratul.com/wp-content/uploads/2026/10/roshona_hero.webp" fetchpriority="high" type="image/webp" />
+    <link rel="preload" as="image" href="https://sazratul.com/wp-content/uploads/2026/10/roshona_logo_primary_uploaded-e1790859800659.webp" fetchpriority="high" type="image/webp" />
+
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -177,6 +181,8 @@
                   class="hero-brand-logo"
                   width="540"
                   height="186"
+                  fetchpriority="high"
+                  decoding="async"
                   referrerpolicy="no-referrer"
                   onerror="this.style.display='none'; document.getElementById('hero-fallback-brand').style.display='inline-block';"
                 />
@@ -233,6 +239,9 @@
                   class="hero-image"
                   width="600"
                   height="450"
+                  fetchpriority="high"
+                  loading="eager"
+                  decoding="async"
                   referrerpolicy="no-referrer"
                   onerror="window.handleImgError(this, 'ROSHONA Botanical Hair Oil')"
                 />
@@ -245,50 +254,6 @@
         </div>
       </section>
 
-      <!-- ====================================================
-           04. TRUST STRIP
-           ==================================================== -->
-      <section class="trust-strip" aria-label="Key Trust Signals">
-        <div class="container">
-          <div class="trust-grid">
-            <!-- Block 01 -->
-            <div class="trust-card">
-              <div class="trust-icon-box" aria-hidden="true">🌿</div>
-              <div>
-                <h3 class="trust-title">পরীক্ষিত ফর্মুলা</h3>
-                <p class="trust-desc">দৈনন্দিন ব্যবহারের জন্য তৈরি</p>
-              </div>
-            </div>
-
-            <!-- Block 02 -->
-            <div class="trust-card">
-              <div class="trust-icon-box" aria-hidden="true">🌱</div>
-              <div>
-                <h3 class="trust-title">Rosemary</h3>
-                <p class="trust-desc">প্রাকৃতিক botanical care</p>
-              </div>
-            </div>
-
-            <!-- Block 03 -->
-            <div class="trust-card">
-              <div class="trust-icon-box" aria-hidden="true">🥥</div>
-              <div>
-                <h3 class="trust-title">Coconut Oil</h3>
-                <p class="trust-desc">চুলের nourishing care</p>
-              </div>
-            </div>
-
-            <!-- Block 04 -->
-            <div class="trust-card">
-              <div class="trust-icon-box" aria-hidden="true">🚚</div>
-              <div>
-                <h3 class="trust-title">COD</h3>
-                <p class="trust-desc">সারাদেশে Cash on Delivery</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
 
       <!-- ====================================================
            05. PROBLEM SECTION (REDESIGNED)
@@ -386,6 +351,7 @@
                 width="440"
                 height="440"
                 loading="lazy"
+                decoding="async"
                 referrerpolicy="no-referrer"
                 onerror="window.handleImgError(this, 'ROSHONA Product Bottle')"
               />
@@ -439,6 +405,7 @@
                 width="540"
                 height="405"
                 loading="lazy"
+                decoding="async"
                 referrerpolicy="no-referrer"
                 onerror="window.handleImgError(this, 'ROSHONA Benefits')"
               />
@@ -534,6 +501,7 @@
                 width="540"
                 height="405"
                 loading="lazy"
+                decoding="async"
                 referrerpolicy="no-referrer"
                 onerror="window.handleImgError(this, 'ROSHONA Pure Ingredients')"
               />
@@ -588,39 +556,6 @@
         </div>
       </section>
 
-      <!-- ====================================================
-           11. HAIR CARE ROUTINE SECTION
-           ==================================================== -->
-      <section class="routine-section" id="routine">
-        <div class="container">
-          <div class="text-center fade-up">
-            <span class="eyebrow">YOUR DAILY HAIR CARE</span>
-            <h2 class="section-headline">চুলের যত্নে ছোট্ট পরিবর্তন, প্রতিদিনের routine-এ</h2>
-            <p class="section-subhead">
-              নিয়মিত ও সঠিক অভ্যাসের মাধ্যমেই ফিরিয়ে আনুন চুলের সতেজতা
-            </p>
-          </div>
-
-          <div class="routine-flow-wrap fade-up">
-            <div class="routine-flow-item">Regular Hair Care</div>
-            <div class="routine-flow-arrow" aria-hidden="true">→</div>
-            <div class="routine-flow-item">Nourishment</div>
-            <div class="routine-flow-arrow" aria-hidden="true">→</div>
-            <div class="routine-flow-item">Scalp Massage</div>
-            <div class="routine-flow-arrow" aria-hidden="true">→</div>
-            <div class="routine-flow-item">Healthy-looking Hair</div>
-          </div>
-
-          <div class="routine-closing-box fade-up">
-            <p class="routine-closing-text">
-              আপনার চুলের প্রয়োজন অনুযায়ী নিয়মিত hair-care routine বজায় রাখুন।
-            </p>
-            <a href="#cartflows-order" class="btn btn-primary" data-cta-scroll="cartflows-order" data-event="cta_click">
-              🌿 এখনই অর্ডার করুন
-            </a>
-          </div>
-        </div>
-      </section>
 
       <!-- ====================================================
            12. SPECIAL OFFER SECTION
@@ -640,6 +575,7 @@
                   width="360"
                   height="360"
                   loading="lazy"
+                  decoding="async"
                   referrerpolicy="no-referrer"
                   onerror="window.handleImgError(this, 'ROSHONA Hair Oil')"
                 />
@@ -719,6 +655,7 @@
                       width="640"
                       height="480"
                       loading="lazy"
+                      decoding="async"
                       referrerpolicy="no-referrer"
                       onerror="window.handleImgError(this, 'গ্রাহকের রিভিউ ০১')"
                     />
@@ -737,6 +674,7 @@
                       width="640"
                       height="480"
                       loading="lazy"
+                      decoding="async"
                       referrerpolicy="no-referrer"
                       onerror="window.handleImgError(this, 'গ্রাহকের রিভিউ ০২')"
                     />
@@ -755,6 +693,7 @@
                       width="640"
                       height="480"
                       loading="lazy"
+                      decoding="async"
                       referrerpolicy="no-referrer"
                       onerror="window.handleImgError(this, 'গ্রাহকের রিভিউ ০৩')"
                     />
@@ -781,22 +720,6 @@
         </div>
       </section>
 
-      <!-- ====================================================
-           14. CUSTOMER EXPERIENCE
-           ==================================================== -->
-      <section class="customer-exp-section">
-        <div class="container">
-          <div class="customer-exp-inner fade-up">
-            <h2 class="customer-exp-headline">আপনার Hair Care Journey শুরু হোক Roshona-এর সাথে</h2>
-            <p class="customer-exp-copy">
-              আজকের ছোট্ট যত্নই হতে পারে আপনার নিয়মিত hair-care routine-এর একটি অংশ।
-            </p>
-            <a href="#cartflows-order" class="btn btn-primary" data-cta-scroll="cartflows-order" data-event="cta_click">
-              🌿 এখনই অর্ডার করুন
-            </a>
-          </div>
-        </div>
-      </section>
 
       <!-- ====================================================
            15. FAQ SECTION
@@ -950,35 +873,6 @@
         </div>
       </section>
 
-      <!-- ====================================================
-           16. FINAL CTA
-           ==================================================== -->
-      <section class="final-cta-section" id="final-cta">
-        <div class="container">
-          <div class="final-cta-inner fade-up">
-            <span class="eyebrow final-cta-eyebrow">START YOUR HAIR-CARE RITUAL</span>
-            <h2 class="final-cta-headline">চুলের যত্নে আজ থেকেই শুরু করুন Roshona</h2>
-            <p class="final-cta-copy">
-              Rosemary ও Coconut Oil-এর যত্নে তৈরি Roshona Hair Oil যোগ করুন আপনার প্রতিদিনের hair-care routine-এ।
-            </p>
-            <a href="#cartflows-order" class="btn btn-gold" data-cta-scroll="cartflows-order" data-event="cta_click">
-              🌿 এখনই অর্ডার করুন
-            </a>
-
-            <div class="final-cta-trust">
-              <div class="final-cta-trust-item">
-                <span>✓</span> <span>পরীক্ষিত ফর্মুলা</span>
-              </div>
-              <div class="final-cta-trust-item">
-                <span>✓</span> <span>Rosemary + Coconut Oil</span>
-              </div>
-              <div class="final-cta-trust-item">
-                <span>✓</span> <span>Cash on Delivery</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
 
       <!-- ====================================================
            17. CARTFLOWS ORDER SECTION
@@ -987,286 +881,16 @@
         <div class="container">
           <!-- CartFlows Header -->
           <div class="cartflows-header text-center fade-up">
-            <div class="cartflows-step-badge">
-              <span>⚡ ১-স্টেপ দ্রুত চেকআউট (CartFlows Instant Checkout)</span>
-            </div>
             <h2 class="section-headline">অর্ডার কনফার্ম করতে নিচের ফরমটি পূরণ করুন</h2>
             <p class="section-subhead">
               ক্যাশ অন ডেলিভারি — সারা দেশে হোম ডেলিভারিতে পণ্য হাতে পেয়ে টাকা পরিশোধ করুন।
             </p>
           </div>
 
-          <!-- Official CartFlows / WooCommerce Checkout Shortcode for WordPress -->
-          <div class="cartflows-shortcode-container" id="cartflows-shortcode-container">
+          <!-- CartFlows Live WordPress Checkout Shortcode -->
+          <div class="cartflows-checkout-wrapper" id="cartflows-checkout-wrapper">
             [cartflows_checkout]
           </div>
-
-          <form id="cartflows-order-form" class="cartflows-checkout-form fade-up" novalidate>
-            <!-- CartFlows & WooCommerce Live Integration Notice -->
-            <div class="cartflows-integration-badge">
-              <div class="cf-badge-icon">⚡</div>
-              <div class="cf-badge-text">
-                <strong>WooCommerce & CartFlows সক্রিয়:</strong>
-                WordPress Elementor-এ <code>[cartflows_checkout]</code> স্বয়ংক্রিয়ভাবে লাইভ চেকআউট ফর্ম পরিচালনা করবে এবং সকল অর্ডার সরাসরি আপনার <strong>WooCommerce ➔ Orders</strong> ও <strong>CartFlows</strong> ড্যাশবোর্ডে জমা হবে।
-              </div>
-            </div>
-
-            <!-- Package Selection (CartFlows Product Options) -->
-            <div class="cartflows-packages-wrap">
-              <div class="cartflows-packages-title">
-                <span>📦</span> <span>প্যাকেজ নির্বাচন করুন (বেশি নিলে বেশি সাশ্রয়):</span>
-              </div>
-              <div class="cartflows-package-grid">
-                <!-- Package 1 -->
-                <label class="cartflows-package-card active" for="pkg-1">
-                  <input type="radio" name="product_package" id="pkg-1" value="1" data-price="499" data-qty="1" checked />
-                  <div class="pkg-radio-circle"></div>
-                  <div class="pkg-info">
-                    <div class="pkg-header-row">
-                      <span class="pkg-title">১টি বোতল (নরমাল প্যাক)</span>
-                      <span class="pkg-price">৳৪৯৯</span>
-                    </div>
-                    <span class="pkg-desc">১০০ মিলি Roshona Organic Hair Oil</span>
-                  </div>
-                </label>
-
-                <!-- Package 2 (Best Value) -->
-                <label class="cartflows-package-card highlight-pkg" for="pkg-2">
-                  <div class="pkg-ribbon">সেরা অফার 🔥</div>
-                  <input type="radio" name="product_package" id="pkg-2" value="2" data-price="899" data-qty="2" />
-                  <div class="pkg-radio-circle"></div>
-                  <div class="pkg-info">
-                    <div class="pkg-header-row">
-                      <span class="pkg-title">২টি বোতল (জনপ্রিয় প্যাক)</span>
-                      <span class="pkg-price">৳৮৯৯</span>
-                    </div>
-                    <span class="pkg-desc">৳১০০ ছাড় + সম্পূর্ণ ২ মাসের রেগুলার রুটিন</span>
-                  </div>
-                </label>
-
-                <!-- Package 3 -->
-                <label class="cartflows-package-card" for="pkg-3">
-                  <input type="radio" name="product_package" id="pkg-3" value="3" data-price="1250" data-qty="3" />
-                  <div class="pkg-radio-circle"></div>
-                  <div class="pkg-info">
-                    <div class="pkg-header-row">
-                      <span class="pkg-title">৩টি বোতল (ফ্যামিলি প্যাক)</span>
-                      <span class="pkg-price">৳১২৫০</span>
-                    </div>
-                    <span class="pkg-desc">সর্বোচ্চ সাশ্রয় + পরিবারের সবার জন্য</span>
-                  </div>
-                </label>
-              </div>
-            </div>
-
-            <!-- CartFlows 2-Column Layout Grid -->
-            <div class="cartflows-layout-grid">
-              <!-- Left Column: Billing & Shipping Details -->
-              <div class="cartflows-col cartflows-billing-col">
-                <div class="cartflows-card">
-                  <div class="cartflows-card-header">
-                    <span class="cartflows-step-num">১</span>
-                    <h3 class="cartflows-card-title">ডেলিভারি ঠিকানা ও তথ্য</h3>
-                  </div>
-
-                  <div class="cartflows-card-body">
-                    <!-- Customer Name -->
-                    <div class="form-group">
-                      <label for="billing_first_name" class="form-label">
-                        আপনার পুরো নাম <span class="required">*</span>
-                      </label>
-                      <input 
-                        type="text" 
-                        id="billing_first_name" 
-                        name="billing_first_name" 
-                        class="form-input" 
-                        placeholder="যেমন: মোঃ সাকিব হোসেন" 
-                        required 
-                      />
-                    </div>
-
-                    <!-- Customer Phone -->
-                    <div class="form-group">
-                      <label for="billing_phone" class="form-label">
-                        মোবাইল নম্বর <span class="required">*</span>
-                      </label>
-                      <input 
-                        type="tel" 
-                        id="billing_phone" 
-                        name="billing_phone" 
-                        class="form-input" 
-                        placeholder="01XXXXXXXXX" 
-                        pattern="^01[3-9]\d{8}$"
-                        required 
-                      />
-                      <small class="form-hint">অর্ডার কনফার্ম করার জন্য এই নম্বরে কল দেওয়া হবে।</small>
-                    </div>
-
-                    <!-- Delivery Area (CartFlows Radio Selection) -->
-                    <div class="form-group">
-                      <label class="form-label">
-                        ডেলিভারি এরিয়া নির্বাচন করুন <span class="required">*</span>
-                      </label>
-                      <div class="cartflows-shipping-radios">
-                        <label class="shipping-radio-item active" for="ship-dhaka">
-                          <input type="radio" name="shipping_location" id="ship-dhaka" value="Dhaka" data-fee="60" checked />
-                          <div class="shipping-radio-content">
-                            <span class="shipping-radio-title">ঢাকার ভেতরে</span>
-                            <span class="shipping-radio-fee">৳৬০</span>
-                          </div>
-                        </label>
-
-                        <label class="shipping-radio-item" for="ship-outside">
-                          <input type="radio" name="shipping_location" id="ship-outside" value="Outside" data-fee="120" />
-                          <div class="shipping-radio-content">
-                            <span class="shipping-radio-title">ঢাকার বাইরে</span>
-                            <span class="shipping-radio-fee">৳১২০</span>
-                          </div>
-                        </label>
-                      </div>
-                      <select id="billing_district" name="billing_state" style="display: none;">
-                        <option value="Dhaka" selected>Dhaka</option>
-                        <option value="Outside">Outside</option>
-                      </select>
-                    </div>
-
-                    <!-- Full Delivery Address -->
-                    <div class="form-group">
-                      <label for="billing_address_1" class="form-label">
-                        সম্পূর্ণ ডেলিভারি ঠিকানা <span class="required">*</span>
-                      </label>
-                      <textarea 
-                        id="billing_address_1" 
-                        name="billing_address_1" 
-                        rows="3" 
-                        class="form-textarea" 
-                        placeholder="বাসা নং, রোড নং, এলাকা, থানা ও জেলার নাম লিখুন" 
-                        required
-                      ></textarea>
-                    </div>
-
-                    <!-- Optional Note -->
-                    <div class="form-group">
-                      <label for="order_comments" class="form-label">
-                        অতিরিক্ত নোট (ঐচ্ছিক)
-                      </label>
-                      <input 
-                        type="text" 
-                        id="order_comments" 
-                        name="order_comments" 
-                        class="form-input" 
-                        placeholder="ডেলিভারি সংক্রান্ত কোনো বিশেষ নির্দেশনা থাকলে লিখুন" 
-                      />
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Right Column: Order Review & Payment -->
-              <div class="cartflows-col cartflows-review-col">
-                <div class="cartflows-card cartflows-sticky-card">
-                  <div class="cartflows-card-header">
-                    <span class="cartflows-step-num">২</span>
-                    <h3 class="cartflows-card-title">আপনার অর্ডার সারসংক্ষেপ</h3>
-                  </div>
-
-                  <div class="cartflows-card-body">
-                    <!-- Product Mini Item -->
-                    <div class="cartflows-product-row">
-                      <img 
-                        src="https://sazratul.com/wp-content/uploads/2026/10/roshona_product.webp" 
-                        alt="Roshona Hair Oil" 
-                        class="cartflows-prod-thumb" 
-                        width="56" 
-                        height="56" 
-                        loading="lazy"
-                      />
-                      <div class="cartflows-prod-details">
-                        <div class="cartflows-prod-name">Roshona Organic Hair Oil</div>
-                        <div class="cartflows-prod-meta">Rosemary + Coconut Botanical Care</div>
-                      </div>
-                      <div class="cartflows-prod-price" id="product-price">৳499</div>
-                    </div>
-
-                    <!-- Quantity Stepper -->
-                    <div class="cartflows-qty-row">
-                      <span class="cartflows-qty-label">পরিমাণ (Quantity):</span>
-                      <div class="quantity-control">
-                        <button type="button" class="qty-btn" id="qty-minus" aria-label="Decrease quantity">−</button>
-                        <input 
-                          type="number" 
-                          id="order-quantity" 
-                          name="order_quantity" 
-                          class="qty-input" 
-                          value="1" 
-                          min="1" 
-                          max="10" 
-                          readonly 
-                        />
-                        <button type="button" class="qty-btn" id="qty-plus" aria-label="Increase quantity">+</button>
-                      </div>
-                    </div>
-
-                    <!-- Summary Table -->
-                    <div class="cartflows-table">
-                      <div class="cartflows-table-row">
-                        <span>সাবটোটাল (<span id="summary-qty">1</span> বোতল)</span>
-                        <span id="summary-subtotal" class="cf-val">৳499</span>
-                      </div>
-                      <div class="cartflows-table-row">
-                        <span>ডেলিভারি চার্জ</span>
-                        <span id="delivery-charge" class="cf-val">৳60</span>
-                      </div>
-                      <div class="cartflows-table-row cartflows-total-row">
-                        <span>সর্বমোট প্রদেয়</span>
-                        <span id="order-total" class="cf-total-val">৳559</span>
-                      </div>
-                    </div>
-
-                    <!-- Payment Method: Cash on Delivery -->
-                    <div class="cartflows-payment-box">
-                      <div class="payment-method-header">
-                        <input type="radio" name="payment_method" id="cod" value="cod" checked />
-                        <label for="cod" class="payment-method-label">
-                          <strong>💵 ক্যাশ অন ডেলিভারি (Cash on Delivery)</strong>
-                        </label>
-                      </div>
-                      <div class="payment-method-desc">
-                        পণ্য ডেলিভারির সময় দেখে মূল্য পরিশোধ করবেন। কোনো অগ্রিম পেমেন্টের ঝুঁকি নেই।
-                      </div>
-                    </div>
-
-                    <!-- Error Banner -->
-                    <div id="cartflows-error-msg" class="cartflows-error-banner" style="display: none;"></div>
-
-                    <!-- Submit Order Button -->
-                    <button 
-                      type="submit" 
-                      id="cartflows-submit-btn" 
-                      class="btn btn-primary btn-block cartflows-submit-button"
-                      data-event="initiate_checkout"
-                    >
-                      <span class="btn-icon">🛒</span>
-                      <span class="btn-text">অর্ডার কনফার্ম করুন — <span id="btn-total-val">৳559</span></span>
-                    </button>
-
-                    <!-- Trust Strip -->
-                    <div class="cartflows-trust-strip">
-                      <div class="cf-trust-item">
-                        <span>🔒</span> <span>SSL এনক্রিপ্টেড নিরাপদ চেকআউট</span>
-                      </div>
-                      <div class="cf-trust-item">
-                        <span>🚚</span> <span>সারা দেশে দ্রুত হোম ডেলিভারি</span>
-                      </div>
-                      <div class="cf-trust-item">
-                        <span>🛡️</span> <span>১০০% আসল ও ইনটেক প্রডাক্ট</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </form>
         </div>
       </section>
     </main>
@@ -1335,7 +959,7 @@
     <!-- ====================================================
          19. MOBILE STICKY CTA
          ==================================================== -->
-    <div class="mobile-sticky-cta" id="mobile-sticky-cta" aria-label="Mobile Quick Checkout">
+    <aside class="mobile-sticky-cta" id="mobile-sticky-cta" aria-label="Mobile Quick Checkout">
       <div class="sticky-info">
         <span class="sticky-product-name">Roshona Hair Oil</span>
         <span class="sticky-product-price">৳499</span>
@@ -1343,7 +967,7 @@
       <a href="#cartflows-order" class="btn btn-primary sticky-cta-btn" data-cta-scroll="cartflows-order" data-event="cta_click">
         অর্ডার করুন
       </a>
-    </div>
+    </aside>
 
     <!-- ====================================================
          Order Confirmation Modal
