@@ -332,187 +332,88 @@
   }
 
   // ====================================================
-  // 5. CartFlows Checkout Preview & Integration
+  // 5. CartFlows Checkout Integration & Live Calculation
   // ====================================================
   const cfWrapper = document.getElementById('cartflows-checkout-wrapper');
 
-  // In static preview sandbox (where WordPress PHP does not run),
-  // render an interactive visual preview matching CartFlows step 149
-  const cfShortcodeToken = '[' + 'cartflows_checkout' + ']';
-  if (cfWrapper && cfWrapper.innerHTML.includes(cfShortcodeToken)) {
-    cfWrapper.innerHTML = `
-      <div id="wcf-embed-checkout-form" class="wcf-embed-checkout-form wcf-embed-checkout-form-modern-checkout wcf-field-default">
-        <div class="woocommerce">
-          <form name="checkout" method="post" class="checkout woocommerce-checkout" action="#">
-            
-            <!-- 1. Customer Information & Billing Details Card -->
-            <div class="wcf-customer-info-main-wrapper">
-              <div class="wcf-customer-info" id="customer_info">
-                <h3 id="customer_information_heading">🌿 Customer information</h3>
-                <div class="woocommerce-billing-fields__customer-info-wrapper">
-                  <p class="form-row form-row-fill">
-                    <label for="billing_email">Email Address (ঐচ্ছিক)</label>
-                    <span class="woocommerce-input-wrapper">
-                      <input type="email" class="input-text" name="billing_email" id="billing_email" placeholder="Email Address" />
-                    </span>
-                  </p>
-                </div>
-              </div>
+  // Interactive Shipping calculation
+  const shipDhaka = document.getElementById('shipping_method_0_dhaka');
+  const shipOutside = document.getElementById('shipping_method_0_outside');
+  const previewShipping = document.getElementById('wcf-preview-shipping');
+  const previewTotal = document.getElementById('wcf-preview-total');
+  const placeOrderBtnText = document.getElementById('place_order_btn_text');
 
-              <div class="woocommerce-billing-fields">
-                <h3 id="billing_fields_heading">📋 Billing details</h3>
-                <div class="woocommerce-billing-fields__field-wrapper">
-                  <p class="form-row form-row-wide validate-required" id="billing_first_name_field">
-                    <label for="billing_first_name" class="required_field">সম্পূর্ণ নাম <span class="required">*</span></label>
-                    <span class="woocommerce-input-wrapper">
-                      <input type="text" class="input-text" name="billing_first_name" id="billing_first_name" placeholder="আপনার সম্পূর্ণ নাম লিখুন" required />
-                    </span>
-                  </p>
-                  <p class="form-row form-row-wide address-field validate-required" id="billing_address_1_field">
-                    <label for="billing_address_1" class="required_field">সম্পূর্ণ ঠিকানা <span class="required">*</span></label>
-                    <span class="woocommerce-input-wrapper">
-                      <input type="text" class="input-text" name="billing_address_1" id="billing_address_1" placeholder="বাসা/হোল্ডিং নম্বর, রোড, এলাকা, থানা ও জেলা" required />
-                    </span>
-                  </p>
-                  <p class="form-row form-row-wide validate-required" id="billing_phone_field">
-                    <label for="billing_phone" class="required_field">ফোন নম্বর <span class="required">*</span></label>
-                    <span class="woocommerce-input-wrapper">
-                      <input type="tel" class="input-text" name="billing_phone" id="billing_phone" placeholder="১১ ডিজিটের মোবাইল নম্বর লিখুন" required />
-                    </span>
-                  </p>
-                </div>
-              </div>
-            </div>
+  function updatePreviewTotal() {
+    const isOutside = shipOutside && shipOutside.checked;
+    const fee = isOutside ? 120 : 80;
+    const total = 499 + fee;
+    if (previewShipping) previewShipping.textContent = `৳${fee}`;
+    if (previewTotal) previewTotal.textContent = `৳${total}`;
+    if (placeOrderBtnText) placeOrderBtnText.textContent = `অর্ডার কনফার্ম করুন — ৳${total}`;
+  }
 
-            <!-- 2. Shipping Methods Card -->
-            <div class="wcf-customer-shipping">
-              <div class="wcf-shipping-methods-wrapper">
-                <h3 class="wcf-shipping-methods-title">🚚 Shipping</h3>
-                <ul id="shipping_method" class="woocommerce-shipping-methods">
-                  <li>
-                    <input type="radio" name="shipping_method[0]" data-index="0" id="shipping_method_0_dhaka" value="flat_rate:1" class="shipping_method" checked />
-                    <label for="shipping_method_0_dhaka">In Side Dhaka: <strong>৳৮০</strong></label>
-                  </li>
-                  <li>
-                    <input type="radio" name="shipping_method[0]" data-index="0" id="shipping_method_0_outside" value="flat_rate:2" class="shipping_method" />
-                    <label for="shipping_method_0_outside">Out Side Dhaka: <strong>৳১২০</strong></label>
-                  </li>
-                </ul>
-              </div>
-            </div>
+  if (shipDhaka) shipDhaka.addEventListener('change', updatePreviewTotal);
+  if (shipOutside) shipOutside.addEventListener('change', updatePreviewTotal);
 
-            <!-- 3. Your Order Review Card -->
-            <div class="wcf-order-wrap">
-              <h3 id="order_review_heading">📦 Your order</h3>
-              <div id="order_review" class="woocommerce-checkout-review-order">
-                <table class="shop_table woocommerce-checkout-review-order-table cartflows_table">
-                  <thead>
-                    <tr>
-                      <th class="product-name">Product</th>
-                      <th class="product-total" style="text-align: right;">Subtotal</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr class="cart_item">
-                      <td class="product-name">
-                        <strong>Roshona Rosemary Coconut Hair Oil</strong> &times;&nbsp;1
-                      </td>
-                      <td class="product-total" style="text-align: right;">
-                        <span class="woocommerce-Price-amount amount">৳499</span>
-                      </td>
-                    </tr>
-                  </tbody>
-                  <tfoot>
-                    <tr class="cart-subtotal">
-                      <th>Subtotal</th>
-                      <td style="text-align: right;"><span class="woocommerce-Price-amount amount">৳499</span></td>
-                    </tr>
-                    <tr class="woocommerce-shipping-totals shipping">
-                      <th>Shipping</th>
-                      <td style="text-align: right;" id="wcf-preview-shipping">৳80</td>
-                    </tr>
-                    <tr class="order-total">
-                      <th>Total</th>
-                      <td style="text-align: right;"><strong><span class="woocommerce-Price-amount amount" id="wcf-preview-total">৳579</span></strong></td>
-                    </tr>
-                  </tfoot>
-                </table>
-              </div>
-            </div>
+  // Form submit handler
+  const previewForm = document.querySelector('form.checkout');
+  if (previewForm) {
+    previewForm.addEventListener('submit', (e) => {
+      // If running on a live WordPress server with active WooCommerce, allow normal submission
+      if (
+        previewForm.getAttribute('action') && 
+        previewForm.getAttribute('action') !== '#' && 
+        !window.location.hostname.includes('run.app') && 
+        !window.location.hostname.includes('localhost')
+      ) {
+        return; // Live WooCommerce handles order processing & Thank You redirection
+      }
 
-            <!-- 4. Payment & Place Order Card -->
-            <div id="payment" class="woocommerce-checkout-payment">
-              <h3 style="font-size: 1.3rem; font-weight: 700; color: #143525; margin-bottom: 1rem; border-bottom: 2px solid rgba(184, 148, 85, 0.25); padding-bottom: 0.5rem;">💵 Payment</h3>
-              <ul class="wc_payment_methods payment_methods methods">
-                <li class="wc_payment_method payment_method_cod">
-                  <input id="payment_method_cod" type="radio" class="input-radio" name="payment_method" value="cod" checked="checked" />
-                  <label for="payment_method_cod">Cash on delivery</label>
-                  <div class="payment_box payment_method_cod">
-                    <p>পণ্য হাতে পেয়ে দেখে মূল্য পরিশোধ করুন। কোনো অগ্রিম পেমেন্টের ঝুঁকি নেই।</p>
-                  </div>
-                </li>
-              </ul>
-              <button type="submit" class="button alt" name="woocommerce_checkout_place_order" id="place_order" value="অর্ডার কনফার্ম করুন">
-                <span>🛒</span> <span>অর্ডার কনফার্ম করুন (Place Order)</span>
-              </button>
-            </div>
+      e.preventDefault();
+      const nameInput = document.getElementById('billing_first_name');
+      const phoneInput = document.getElementById('billing_phone');
+      const addrInput = document.getElementById('billing_address_1');
 
-          </form>
-        </div>
-      </div>
-    `;
+      if (!nameInput?.value.trim() || !phoneInput?.value.trim() || !addrInput?.value.trim()) {
+        alert('⚠️ অনুগ্রহ করে আপনার নাম, সচল মোবাইল নম্বর এবং সম্পূর্ণ ডেলিভারি ঠিকানা পূরণ করুন।');
+        return;
+      }
 
-    // Interactive Shipping calculation in preview
-    const shipDhaka = document.getElementById('shipping_method_0_dhaka');
-    const shipOutside = document.getElementById('shipping_method_0_outside');
-    const previewShipping = document.getElementById('wcf-preview-shipping');
-    const previewTotal = document.getElementById('wcf-preview-total');
+      // Check phone number format
+      const phoneVal = phoneInput.value.replace(/\D/g, '');
+      if (phoneVal.length < 11) {
+        alert('⚠️ অনুগ্রহ করে সঠিক ১১ ডিজিটের মোবাইল নম্বর লিখুন (যেমন: 017xxxxxxxx)');
+        phoneInput.focus();
+        return;
+      }
 
-    function updatePreviewTotal() {
+      const modal = document.getElementById('order-modal');
+      const details = document.getElementById('modal-receipt-details');
       const isOutside = shipOutside && shipOutside.checked;
-      const fee = isOutside ? 120 : 80;
-      if (previewShipping) previewShipping.textContent = `৳${fee}`;
-      if (previewTotal) previewTotal.textContent = `৳${499 + fee}`;
-    }
+      const shipArea = isOutside ? 'ঢাকার বাইরে সারা বাংলাদেশ (৳১২০)' : 'ঢাকার ভেতরে (৳৮০)';
+      const totalAmount = isOutside ? '৳৬১৯' : '৳৫৭৯';
 
-    if (shipDhaka) shipDhaka.addEventListener('change', updatePreviewTotal);
-    if (shipOutside) shipOutside.addEventListener('change', updatePreviewTotal);
-
-    // Form submit preview handler (for static testing)
-    const previewForm = cfWrapper.querySelector('form.checkout');
-    if (previewForm) {
-      previewForm.addEventListener('submit', (e) => {
-        // If this is a real WooCommerce form on a live site, let WooCommerce handle it
-        if (previewForm.getAttribute('action') && previewForm.getAttribute('action') !== '#') {
-          return; // Let live WooCommerce process the order and redirect
-        }
-
-        e.preventDefault();
-        const nameInput = document.getElementById('billing_first_name');
-        const phoneInput = document.getElementById('billing_phone');
-        const addrInput = document.getElementById('billing_address_1');
-
-        if (!nameInput?.value.trim() || !phoneInput?.value.trim() || !addrInput?.value.trim()) {
-          alert('⚠️ অনুগ্রহ করে আপনার নাম, সচল মোবাইল নম্বর এবং সম্পূর্ণ ডেলিভারি ঠিকানা পূরণ করুন।');
-          return;
-        }
-
-        const modal = document.getElementById('order-modal');
-        const details = document.getElementById('modal-receipt-details');
-        if (details) {
-          details.innerHTML = `
-            <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px; margin-bottom: 12px; font-size: 0.95rem; line-height: 1.6;">
-              <p style="margin: 0 0 6px 0;"><strong>গ্রাহকের নাম:</strong> ${escapeHtml(nameInput.value)}</p>
-              <p style="margin: 0 0 6px 0;"><strong>মোবাইল নম্বর:</strong> ${escapeHtml(phoneInput.value)}</p>
-              <p style="margin: 0 0 6px 0;"><strong>ডেলিভারি ঠিকানা:</strong> ${escapeHtml(addrInput.value)}</p>
-              <p style="margin: 0 0 6px 0;"><strong>প্রডাক্ট:</strong> Roshona Rosemary Coconut Hair Oil × 1</p>
-              <p style="margin: 0; font-size: 1.1rem; color: #183A2A;"><strong>সর্বমোট প্রদেয় বিল (COD): ${previewTotal?.textContent || '৳579'}</strong></p>
-            </div>
-          `;
-        }
-        if (modal) modal.classList.add('active');
-      });
-    }
+      if (details) {
+        details.innerHTML = `
+          <div style="background: #f8fafc; border: 1.5px solid rgba(184, 148, 85, 0.35); border-radius: 12px; padding: 16px; margin-bottom: 14px; font-size: 0.95rem; line-height: 1.7;">
+            <p style="margin: 0 0 8px 0; color: #143525; font-size: 1.05rem;"><strong>🎉 আলহামদুলিল্লাহ! আপনার অর্ডারটি গ্রহণ করা হয়েছে।</strong></p>
+            <hr style="border: none; border-top: 1px dashed rgba(20, 53, 37, 0.2); margin: 10px 0;" />
+            <p style="margin: 0 0 6px 0;"><strong>গ্রাহকের নাম:</strong> ${escapeHtml(nameInput.value)}</p>
+            <p style="margin: 0 0 6px 0;"><strong>মোবাইল নম্বর:</strong> ${escapeHtml(phoneInput.value)}</p>
+            <p style="margin: 0 0 6px 0;"><strong>ডেলিভারি ঠিকানা:</strong> ${escapeHtml(addrInput.value)}</p>
+            <p style="margin: 0 0 6px 0;"><strong>ডেলিভারি এলাকা:</strong> ${shipArea}</p>
+            <p style="margin: 0 0 6px 0;"><strong>প্রোডাক্ট:</strong> Roshona Rosemary Coconut Hair Oil × ১</p>
+            <p style="margin: 0 0 6px 0;"><strong>পেমেন্ট মেথড:</strong> ক্যাশ অন ডেলিভারি (COD)</p>
+            <hr style="border: none; border-top: 1px dashed rgba(20, 53, 37, 0.2); margin: 10px 0;" />
+            <p style="margin: 0; font-size: 1.15rem; color: #183A2A;"><strong>সর্বমোট প্রদেয় বিল: ${totalAmount}</strong></p>
+          </div>
+          <p style="font-size: 0.88rem; color: #4b5563; line-height: 1.5; margin: 0;">
+            📞 শীঘ্রই আমাদের কাস্টমার সাপোর্ট টিম থেকে আপনার নম্বরে কল করে অর্ডারটি কনফার্ম করা হবে।
+          </p>
+        `;
+      }
+      if (modal) modal.classList.add('active');
+    });
   }
 
   // ====================================================

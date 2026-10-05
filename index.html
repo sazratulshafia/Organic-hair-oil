@@ -887,9 +887,134 @@
             </p>
           </div>
 
-          <!-- CartFlows Live WordPress Checkout Shortcode -->
-          <div class="cartflows-checkout-wrapper" id="cartflows-checkout-wrapper">
-            [cartflows_checkout]
+          <!-- CartFlows Live WordPress Checkout Form -->
+          <div class="cartflows-checkout-wrapper" id="cartflows-checkout-wrapper" data-cartflows-shortcode="[cartflows_checkout]">
+            <div class="wcf-embed-checkout-form wcf-embed-checkout-form-one-column">
+              <div class="woocommerce">
+                <form name="checkout" method="post" class="checkout woocommerce-checkout" action="/checkout/" enctype="multipart/form-data">
+                  
+                  <!-- Hidden WooCommerce parameters -->
+                  <input type="hidden" name="billing_country" id="billing_country" value="BD" />
+                  <input type="hidden" name="shipping_country" id="shipping_country" value="BD" />
+                  <input type="hidden" name="billing_city" id="billing_city" value="Dhaka" />
+                  <input type="hidden" name="shipping_city" id="shipping_city" value="Dhaka" />
+                  <input type="hidden" name="ship_to_different_address" value="0" />
+                  <input type="hidden" name="payment_method" value="cod" />
+
+                  <!-- 1. Customer Information Card -->
+                  <div class="wcf-customer-info-main-wrapper">
+                    <div class="wcf-customer-info">
+                      <div class="woocommerce-billing-fields">
+                        <h3 class="wcf-customer-info-title">👤 আপনার নাম ও ডেলিভারি তথ্য</h3>
+                        <div class="woocommerce-billing-fields__field-wrapper">
+                          <p class="form-row form-row-wide validate-required" id="billing_first_name_field">
+                            <label for="billing_first_name" class="wcf-field-label">আপনার সম্পূর্ণ নাম <abbr class="required" title="আবশ্যক">*</abbr></label>
+                            <span class="woocommerce-input-wrapper">
+                              <input type="text" class="input-text" name="billing_first_name" id="billing_first_name" placeholder="যেমন: মো: আরিফুল ইসলাম" required />
+                            </span>
+                          </p>
+                          <p class="form-row form-row-wide validate-required" id="billing_phone_field">
+                            <label for="billing_phone" class="wcf-field-label">মোবাইল নম্বর <abbr class="required" title="আবশ্যক">*</abbr></label>
+                            <span class="woocommerce-input-wrapper">
+                              <input type="tel" class="input-text" name="billing_phone" id="billing_phone" placeholder="১১ ডিজিটের সচল মোবাইল নম্বর লিখুন (যেমন: 017xxxxxxxx)" required />
+                            </span>
+                          </p>
+                          <p class="form-row form-row-wide validate-required" id="billing_address_1_field">
+                            <label for="billing_address_1" class="wcf-field-label">সম্পূর্ণ ডেলিভারি ঠিকানা <abbr class="required" title="আবশ্যক">*</abbr></label>
+                            <span class="woocommerce-input-wrapper">
+                              <textarea class="input-text" name="billing_address_1" id="billing_address_1" placeholder="বাসা/হোল্ডিং নম্বর, রোড, গ্রাম/মহল্লা, থানা ও জেলার নাম লিখুন" rows="3" required></textarea>
+                            </span>
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- 2. Shipping Area Selection Card -->
+                  <div class="wcf-customer-shipping">
+                    <div class="wcf-shipping-methods-wrapper">
+                      <h3 class="wcf-shipping-methods-title">🚚 ডেলিভারি এলাকা নির্বাচন করুন</h3>
+                      <ul id="shipping_method" class="woocommerce-shipping-methods">
+                        <li>
+                          <input type="radio" name="shipping_method[0]" data-index="0" id="shipping_method_0_dhaka" value="flat_rate:1" class="shipping_method" checked />
+                          <label for="shipping_method_0_dhaka">
+                            <span><strong>ঢাকার ভেতরে হোম ডেলিভারি:</strong> ৳৮০</span>
+                            <span style="display: block; font-size: 0.85rem; color: #64748b; font-weight: 400; margin-top: 2px;">(সময়কাল: ২৪ থেকে ৪৮ ঘণ্টার মধ্যে)</span>
+                          </label>
+                        </li>
+                        <li>
+                          <input type="radio" name="shipping_method[0]" data-index="0" id="shipping_method_0_outside" value="flat_rate:2" class="shipping_method" />
+                          <label for="shipping_method_0_outside">
+                            <span><strong>ঢাকার বাইরে সারা বাংলাদেশ:</strong> ৳১২০</span>
+                            <span style="display: block; font-size: 0.85rem; color: #64748b; font-weight: 400; margin-top: 2px;">(সময়কাল: ২ থেকে ৩ কার্যদিবস)</span>
+                          </label>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+
+                  <!-- 3. Your Order Review Card -->
+                  <div class="wcf-order-wrap">
+                    <h3 id="order_review_heading">📦 আপনার অর্ডার সামারি</h3>
+                    <div id="order_review" class="woocommerce-checkout-review-order">
+                      <table class="shop_table woocommerce-checkout-review-order-table cartflows_table">
+                        <thead>
+                          <tr>
+                            <th class="product-name">প্রোডাক্ট</th>
+                            <th class="product-total" style="text-align: right;">মূল্য</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr class="cart_item">
+                            <td class="product-name">
+                              <strong>Roshona Rosemary Coconut Hair Oil</strong> &times;&nbsp;1
+                            </td>
+                            <td class="product-total" style="text-align: right;">
+                              <span class="woocommerce-Price-amount amount">৳৪৯৯</span>
+                            </td>
+                          </tr>
+                        </tbody>
+                        <tfoot>
+                          <tr class="cart-subtotal">
+                            <th>সাবটোটাল</th>
+                            <td style="text-align: right;"><span class="woocommerce-Price-amount amount">৳৪৯৯</span></td>
+                          </tr>
+                          <tr class="woocommerce-shipping-totals shipping">
+                            <th>ডেলিভারি চার্জ</th>
+                            <td style="text-align: right;" id="wcf-preview-shipping">৳৮০</td>
+                          </tr>
+                          <tr class="order-total">
+                            <th>সর্বমোট প্রদেয় বিল (COD)</th>
+                            <td style="text-align: right;"><strong><span class="woocommerce-Price-amount amount" id="wcf-preview-total">৳৫৭৯</span></strong></td>
+                          </tr>
+                        </tfoot>
+                      </table>
+                    </div>
+                  </div>
+
+                  <!-- 4. Payment & Place Order Card -->
+                  <div id="payment" class="woocommerce-checkout-payment">
+                    <h3 style="font-size: 1.3rem; font-weight: 700; color: #143525; margin-bottom: 1rem; border-bottom: 2px solid rgba(184, 148, 85, 0.25); padding-bottom: 0.5rem;">💵 পেমেন্ট মেথড</h3>
+                    <ul class="wc_payment_methods payment_methods methods">
+                      <li class="wc_payment_method payment_method_cod">
+                        <input id="payment_method_cod" type="radio" class="input-radio" name="payment_method" value="cod" checked="checked" />
+                        <label for="payment_method_cod"><strong>ক্যাশ অন ডেলিভারি (Cash on Delivery)</strong></label>
+                        <div class="payment_box payment_method_cod">
+                          <p>পণ্য হাতে পেয়ে দেখে মূল্য পরিশোধ করবেন। অগ্রিম কোনো টাকা দেওয়ার ঝুঁকি নেই।</p>
+                        </div>
+                      </li>
+                    </ul>
+                    <button type="submit" class="button alt" name="woocommerce_checkout_place_order" id="place_order" value="অর্ডার কনফার্ম করুন">
+                      <span>🛒</span> <span id="place_order_btn_text">অর্ডার কনফার্ম করুন — ৳৫৭৯</span>
+                    </button>
+                    <p style="text-align: center; margin: 0.85rem 0 0 0; font-size: 0.85rem; color: #64748b;">
+                      🔒 সম্পূর্ণ নিরাপদ ও সুরক্ষিত ক্যাশ অন ডেলিভারি অর্ডার
+                    </p>
+                  </div>
+
+                </form>
+              </div>
+            </div>
           </div>
         </div>
       </section>
